@@ -1,6 +1,6 @@
 # Defensive Security: LetsDefend SOC Alert Triage Portfolio
 
-**Author:** John Gabriel Abitria | Abu Dhabi, UAE  
+**Author:** John Gabriel Abitria | UAE
 **Focus:** Incident Triage, Log Analysis, Privilege Escalation & MFA Bypass Investigations
 
 ---
