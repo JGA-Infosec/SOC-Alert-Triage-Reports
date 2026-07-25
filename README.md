@@ -6,57 +6,53 @@
 ---
 
 ## 📌 Executive Summary
-This repository contains end-to-end investigation reports for live simulated security alerts on the LetsDefend platform. Each report details the initial trigger, log analysis (Windows Event Logs / Network Telemetry), framework mapping (MITRE ATT&CK), and final incident verdicts.
+This repository contains end-to-end investigation reports for live simulated security alerts on the LetsDefend platform. Each report details the initial trigger, log analysis (Windows Event Logs / Network Telemetry), and final incident verdicts based on manual log triage.
 
 ---
 
 ## 📑 Quick Navigation
-* [Alert 1: SOC225 - Compromised VPN Connection & MFA Bypass](#-alert-1-soc225---compromised-vpn-connection--mfa-bypass)
-* [Alert 2: SOC313 - CVE-2024-39138 Exploitation & Privilege Escalation](#-alert-2-soc313---cve-2024-39138-exploitation--privilege-escalation)
+* [Alert 1: Event ID 225 - Compromised VPN Connection (MFA Bypass)](#-alert-1-event-id-225---compromised-vpn-connection-mfa-bypass)
+* [Alert 2: Event ID 313 - CVE-2024-39138 Malicious Executable](#-alert-2-event-id-313---cve-2024-39138-malicious-executable)
 
 ---
 
-## 🚨 Alert 1: SOC225 - Compromised VPN Connection & MFA Bypass
+## 🚨 Alert 1: Event ID 225 - Compromised VPN Connection (MFA Bypass)
 
-### 1. Incident Summary
-* **Date Investigated:** Feb 13, 2024
-* **Category:** Unauthorized Access / Identity Compromise
-* **Overview:** An alert was triggered for an unauthorized VPN connection originating from a restricted geolocation (Vietnam) targeting the user account `Monica`. The threat actor successfully authenticated via the corporate VPN gateway (`33.33.33.33`) by bypassing multi-factor authentication (MFA) security controls.
+### 1. Alert Overview
+* **Incident:** Established Compromised VPN connection from unauthorized country (Vietnam).
+* **Target Endpoint:** Monica (Internal IP: `172.16.17.163`)
+* **Attacker Source:** VPN gateway `33.33.33.33`
 
 ### 2. Investigation & Log Triage
-* **Timeline Analysis:** The legitimate user was last observed active on the endpoint on Feb 12, 2024, at 04:41 PM.
-* **Endpoint Activity:** On Feb 13, 2024, endpoint activity logs indicated suspicious behavior, confirming an interactive session was established while the legitimate user was away.
-* **Reconnaissance Execution:** Telemetry confirmed the threat actor actively executed system reconnaissance commands on the internal endpoint (`172.16.17.163`) immediately following the unauthorized VPN authentication.
+* **MFA Bypass:** The attacker managed to get unauthorized access with the VPN gateway and was logged bypassing multi-factor authentication security.
+* **Timeline Analysis:** The logs show that Monica was last seen active on Feb 12, 2024, at 04:41 PM. 
+* **Suspicious Activity:** Endpoint activity logs showed suspicious activity on Feb 13, 2024, with the attacker running reconnaissance commands on the endpoint's machine.
 
-### 3. Framework Mapping (MITRE ATT&CK)
-* **Tactic:** Initial Access, Discovery
-* **Technique:** T1133 (External Remote Services), T1087 (Account Discovery)
-
-### 4. Remediation & Conclusion
-* **Verdict:** True Positive
-* **Action Taken:** The endpoint was successfully contained. No critical infrastructure was compromised, and no successful lateral movement was observed. Forensic backups were completed, and a full system wipe was ordered.
+### 3. Conclusion & Remediation
+* **Verdict:** True Positive Incident.
+* **Action Taken:** The endpoint has now been contained. No critical infrastructure was compromised, and no successful lateral movement was done. Backups have been done and a full wipe was ordered.
 
 ---
 
-## 🚨 Alert 2: SOC313 - CVE-2024-39138 Exploitation & Privilege Escalation
+## 🚨 Alert 2: Event ID 313 - CVE-2024-39138 Malicious Executable
 
-### 1. Incident Summary
-* **Date Investigated:** [Insert Date]
-* **Category:** Privilege Escalation / Execution
-* **Overview:** A security event was generated regarding a malicious executable masquerading as a legitimate binary. The threat actor, operating from a malicious IP address (`185.107.56.141` - Netherlands), targeted the internal endpoint `172.16.17.207` belonging to the user `Victor`, culminating in a successful local privilege escalation exploit.
+### 1. Alert Overview
+* **Incident:** CVE-2024-39138 Malicious executable masquerading as a binary execution detected.
+* **Target Endpoint:** Victor (Internal IP: `172.16.17.207`)
+* **Attacker Source:** `185.107.56.141` (Netherlands)
 
-### 2. Investigation & Log Triage
-* **Authentication Brute Force:** The legitimate user logged out at 12:00 PM. At 2:35 PM, logs indicated an automated brute-force attack generating multiple authentication failures showing error code `0xC000006D` (Unknown user name or bad password).
-* **Lateral Movement & Access:** Within a minute, the threat actor utilized a compromised Guest account to gain access to `Victor`'s primary account. Windows Security Event ID `4624` was recorded with a Logon Type `10` (RemoteInteractive), indicating successful RDP or terminal access.
-* **Failed Privilege Escalation Attempts:** At 2:35 PM, the threat actor attempted to brute-force administrative credentials but failed. Subsequent attempts to probe RDP ports were successfully dropped by the host firewall.
-* **Successful Exploitation:** Following the failed brute-force attempts, the threat actor executed a local privilege escalation exploit targeting vulnerability CVE-2024-39138. The exploit successfully granted the attacker administrative execution rights on the local machine.
+### 2. Investigation Findings
+* **Authentication Brute Force:** The threat actor was logged bruteforcing or using an automation tool to bypass user login, giving error codes at around 2:35 PM (Victor was already logged out of the endpoint at 12 PM). Error generated: `0xC000006D` (Unknown user name or bad password).
+* **Lateral Movement:** Not even a minute after, the guest account that the threat actor was in already gained access to Victor's account via lateral movement. **EventID 4624** (An account was successfully logged on) triggered with a **Logon Type of 10 (RemoteInteractive)**, suggesting the threat actor had RDP access or terminal login.
+* **Privilege Escalation Attempts:** In the same 2:35 PM time frame, the threat actor tried to escalate privileges into an admin account but was unable to crack the correct credentials (generating more `0xC000006D` errors).
+* **Network Probing:** The source IP probed RDP ports after failing to gain an admin account but was dropped by the firewall.
+* **Successful Exploitation:** The threat actor was able to execute local privilege escalation exploit code targeting the **CVE-2024-39138** vulnerability, executing admin exploits via local vulnerability exploitation. 
+* **Containment:** The victim's machine showed indicators of compromise and was immediately isolated from the network.
 
-
-### 3. Framework Mapping (MITRE ATT&CK)
-* **Tactic:** Privilege Escalation, Lateral Movement, Defense Evasion
-* **Technique:** T1068 (Exploitation for Privilege Escalation), T1021.001 (Remote Desktop Protocol), T1110 (Brute Force)
-
-### 4. Remediation & Conclusion
-* **Verdict:** True Positive
-* **Action Taken:** The exploitation was confirmed and the endpoint was immediately isolated from the network. No critical infrastructure was damaged. The incident was escalated to senior analysts for further forensic review.
-* **Security Recommendations:** Enforce strict password complexity requirements across the domain, implement continuous monitoring of endpoint configurations for exposed credentials, and strictly enforce the principle of least privilege for all Guest accounts.
+### 3. Conclusion & Recommendations
+* **Verdict:** True Positive.
+* **Action Taken:** Exploitation was confirmed, endpoint is now isolated, and no critical infrastructure was damaged. The alert has been escalated to seniors.
+* **Recommendations:** 
+  * Require employees to have strong passwords.
+  * Consistent monitoring of endpoint configurations to ensure no exposed passwords or misconfigurations are evident.
+  * Enforce least privilege for guest users.
