@@ -5,18 +5,18 @@
 
 ---
 
-## 📌 Executive Summary
-This repository contains end-to-end investigation reports for live simulated security alerts on the LetsDefend platform. Each report details the initial trigger, log analysis (Windows Event Logs / Network Telemetry), and final incident verdicts based on manual log triage.
+## Executive Summary
+This repository contains investigation reports for live simulated security alerts on the LetsDefend platform. Each report details the initial trigger, log analysis (Windows Event Logs / Network Telemetry), and final incident verdicts based on manual log triage.
 
 ---
 
-## 📑 Quick Navigation
+## Quick Navigation
 * [Alert 1: Event ID 225 - Compromised VPN Connection (MFA Bypass)](#-alert-1-event-id-225---compromised-vpn-connection-mfa-bypass)
 * [Alert 2: Event ID 313 - CVE-2024-39138 Malicious Executable](#-alert-2-event-id-313---cve-2024-39138-malicious-executable)
 
 ---
 
-## 🚨 Alert 1: Event ID 225 - Compromised VPN Connection (MFA Bypass)
+## Alert 1: Event ID 225 - Compromised VPN Connection (MFA Bypass)
 
 ### 1. Alert Overview
 * **Incident:** Established Compromised VPN connection from unauthorized country (Vietnam).
@@ -34,7 +34,7 @@ This repository contains end-to-end investigation reports for live simulated sec
 
 ---
 
-## 🚨 Alert 2: Event ID 313 - CVE-2024-39138 Malicious Executable
+## Alert 2: Event ID 313 - CVE-2024-39138 Malicious Executable
 
 ### 1. Alert Overview
 * **Incident:** CVE-2024-39138 Malicious executable masquerading as a binary execution detected.
